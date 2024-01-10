@@ -7,12 +7,14 @@ from kivymd.uix.label import MDLabel
 from kivy.clock import Clock
 from kivy.graphics.texture import Texture
 from kivymd.uix.dialog import MDDialog
+from kivy.clock import mainthread
+from playsound import playsound
+import threading
 import socket
 import cv2
 import pickle
 import struct
 from datetime import datetime
-
 
 class Angelus(MDApp):
     def build(self):
@@ -85,6 +87,11 @@ class Angelus(MDApp):
 
         return layout
 
+    def sound(self):
+        threading.Thread(target=self.play_sound_thread).start()
+
+    def play_sound_thread(self):
+        playsound('zvukovi/zvuk2.MP3')
 
     def show_history(self):
         self.content = MDBoxLayout(orientation='vertical', spacing='12dp', padding='12dp')
@@ -211,6 +218,7 @@ class Angelus(MDApp):
             self.label.size_hint_x = None
             self.label.width = self.label.texture_size[0]
             data2 = []
+            self.sound()
 
 
 Angelus().run()
