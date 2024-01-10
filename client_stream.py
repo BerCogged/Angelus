@@ -15,14 +15,18 @@ import cv2
 import pickle
 import struct
 from datetime import datetime
+from kivy import platform
 
+if platform=="android":
+    from android.permissions import request_permissions, Permission
+    request_permissions([Permission.INTERNET])
 class Angelus(MDApp):
     def build(self):
         layout = MDBoxLayout(orientation='vertical')
         self.theme_cls.theme_style = "Dark"
         self.text = "CONNECT"
-        self.image = Image(size_hint=(1, 1),  pos=(0, 2))
-        self.moved_text = self.moved_text3 = self.moved_text4 =self.moved_text5 = self.moved_text6 = 'Did not moved yet'
+        self.image = Image(size_hint=(1, 1), pos=(0, 2))
+        self.moved_text = self.moved_text3 = self.moved_text4 = self.moved_text5 = self.moved_text6 = 'Did not moved yet'
         layout.add_widget(self.image)
         self.label = MDLabel(
             text=self.text,
@@ -31,18 +35,18 @@ class Angelus(MDApp):
         )
         layout.add_widget(self.label)
         self.label2 = MDLabel(
-            text = self.moved_text,
-            adaptive_height = True,
+            text=self.moved_text,
+            adaptive_height=True,
             halign='center', valign='middle'
         )
         self.label3 = MDLabel(
-            text = self.moved_text3,
-            adaptive_height = True,
+            text=self.moved_text3,
+            adaptive_height=True,
             halign='center', valign='middle'
         )
         self.label4 = MDLabel(
-            text = self.moved_text4,
-            adaptive_height = True,
+            text=self.moved_text4,
+            adaptive_height=True,
             halign='center', valign='middle'
         )
         self.label5 = MDLabel(
@@ -51,15 +55,15 @@ class Angelus(MDApp):
             halign='center', valign='middle'
         )
         self.label6 = MDLabel(
-            text = self.moved_text6,
-            adaptive_height = True,
-            halign='center', valign = 'middle'
+            text=self.moved_text6,
+            adaptive_height=True,
+            halign='center', valign='middle'
         )
         self.button = MDRaisedButton(
             text="HISTORY",
             on_release=lambda *args: self.show_history(),
-            halign = 'center',
-            valign= "center"
+            halign='center',
+            valign="center"
         )
 
         self.dialog = MDDialog(
@@ -130,7 +134,7 @@ class Angelus(MDApp):
         content = MDBoxLayout(orientation='vertical', spacing='12dp', padding='12dp')
 
         text_field = MDTextField(
-            size_hint = (0.84, None)
+            size_hint=(0.84, None)
         )
         content.add_widget(text_field)
 
@@ -151,12 +155,11 @@ class Angelus(MDApp):
         dialog.add_widget(content)
         dialog.open()
 
-
     def on_ok(self, dialog, text):
         self.host_ip = text
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.data_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #self.host_ip = '192.168.1.8'
+        # self.host_ip = '192.168.1.8'
         self.port = 1055
         self.port2 = 1077
         self.client_socket.connect((self.host_ip, self.port))
@@ -189,25 +192,25 @@ class Angelus(MDApp):
 
     def update_data(self, dt):
         data2 = str(self.data_socket.recv(1024).decode())
-        self.counter= self.counter +1
+        self.counter = self.counter + 1
         print(data2[0])
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         if self.i == 1 and data2[0] == "5":
             self.label2.text = "Moved at: " + current_time
-            self.i=2
+            self.i = 2
         elif self.i == 2 and data2[0] == "5":
             self.label3.text = "Moved at: " + current_time
-            self.i=3
+            self.i = 3
         elif self.i == 3 and data2[0] == "5":
             self.label4.text = "Moved at: " + current_time
-            self.i=4
-        elif self.i==4 and data2[0] == "5":
+            self.i = 4
+        elif self.i == 4 and data2[0] == "5":
             self.label5.text = "Moved at: " + current_time
-            self.i=5
-        elif self.i==5 and data2[0] == "5":
+            self.i = 5
+        elif self.i == 5 and data2[0] == "5":
             self.label6.text = "Moved at: " + current_time
-            self.i=1
+            self.i = 1
         if self.counter == 1:
             self.label.text = "CONNECTED"
             self.label.size_hint_x = None
